@@ -17,6 +17,8 @@ interface TransactionsProviderProps {
 interface TransactionsContextData {
     transactions: Transaction[];
     createTransaction: (transaction: TransactionInput) => Promise<void>;
+    getTransactions: () => Promise<void>;
+    deleteTransaction: (id: number) => Promise<void>;
 }
 
 type TransactionInput = Omit<Transaction, 'id' | 'createdAt'>;
@@ -26,22 +28,26 @@ const TransactionsContext = createContext<TransactionsContextData>({} as Transac
 export function TransactionsProvider({ children }: TransactionsProviderProps) {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-    useEffect(() => {
-        api.get('transactions')
-        .then(response => setTransactions(response.data.transactions))
-        .catch(error => console.log(error.response.data));
-    }, []);
+    async function getTransactions() {
+        const response = await api.get('transactions');
+        setTransactions(response.data);
+    }
     
     async function createTransaction(transaction_input: TransactionInput){
-        const response = await api.post('transactions', {
+        console.log(transaction_input);
+        await api.post('transactions/create', {
             ...transaction_input,
             createdAt: new Date(),        
         });
-        const { transaction } = response.data;
-        setTransactions([...transactions, transaction]);
     }
+
+    async function deleteTransaction(id: number){
+        await api.delete(`transactions/delete/${id}`);
+        setTransactions(transactions.filter(transaction => transaction.id !== id));
+    }
+
     return (
-        <TransactionsContext.Provider value = {{ transactions, createTransaction }}>
+        <TransactionsContext.Provider value = {{ transactions, createTransaction, getTransactions, deleteTransaction }}>
             {children}
         </TransactionsContext.Provider>
     )

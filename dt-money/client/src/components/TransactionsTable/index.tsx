@@ -1,10 +1,16 @@
-import { Container } from "./styles";
-import { useTransactions } from "../../hooks/useTransactions";
+import imagem_fechar from '../../assets/fechar.svg';
+import { Container } from './styles';
+import { useTransactions } from '../../hooks/useTransactions';
 
 
 export function TransactionsTable(){
-    const { transactions } = useTransactions();
+    const { transactions, getTransactions, deleteTransaction } = useTransactions();
 
+    async function loadApiData(){
+        await getTransactions();
+    }
+
+    loadApiData();
     return (
         <Container>
             <table>
@@ -14,6 +20,7 @@ export function TransactionsTable(){
                         <th>Valor</th>
                         <th>Categoria</th>
                         <th>Data</th>
+                        <th>Deletar</th>
                     </tr>
                 </thead>
 
@@ -33,6 +40,13 @@ export function TransactionsTable(){
                                     new Intl.DateTimeFormat('pt-BR').format(
                                         new Date(transaction.createdAt)
                                 )} </td>
+                                <td>
+                                    <button onClick = { () => {
+                                        deleteTransaction(Number(transaction.id));
+                                    }}>
+                                        <img src = {imagem_fechar} alt = 'deletar'/>
+                                    </button>
+                                </td>
                             </tr>
                         );
                     })}
