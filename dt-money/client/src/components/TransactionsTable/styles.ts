@@ -34,6 +34,12 @@ export const Container = styled.div`
                 color: var(--red);
             }
         }
+
+        button {
+            background: transparent;
+            border: 0;
+            padding: 0;
+        }
     }
 
 `;

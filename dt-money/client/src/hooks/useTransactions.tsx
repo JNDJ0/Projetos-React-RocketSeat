@@ -1,5 +1,5 @@
 import { api } from '../services/api';
-import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
+import { ReactNode, createContext, useContext, useState } from 'react';
 
 interface Transaction {
     id: number;
@@ -47,7 +47,12 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     }
 
     return (
-        <TransactionsContext.Provider value = {{ transactions, createTransaction, getTransactions, deleteTransaction }}>
+        <TransactionsContext.Provider value = {{ 
+            transactions, 
+            createTransaction, 
+            getTransactions, 
+            deleteTransaction 
+        }}>
             {children}
         </TransactionsContext.Provider>
     )
